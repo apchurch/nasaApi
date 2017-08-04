@@ -1,5 +1,6 @@
-// $.fetch('https://api.nasa.gov/neo/rest/v1/feed?start_date=2017-07-23&end_date=2017-07-29&api_key=Lhfmo5GJFKkymB61crhYsjHIUjNc8Eq8iuFBr4pn').then(function(data){
-// 	console.log(data)
+$.get('https://api.nasa.gov/neo/rest/v1/feed?start_date=2017-07-23&end_date=2017-07-29&api_key=Lhfmo5GJFKkymB61crhYsjHIUjNc8Eq8iuFBr4pn').then(function(data){
+	console.log(data)
+		
 // if(is_potentially_hazardous_asteroid = true) {
 // 	return Object
 // 	}
@@ -25,16 +26,42 @@
 
 // })
 $(function() {
-	var $data = $('#data')
+	var $Object = $('#Object')
+	var $name = $('#name')
+	var $miles_per_hour = $('miles_per_hour')
 	$.ajax( {
 		type: 'Get',
 		url: 'https://api.nasa.gov/neo/rest/v1/feed?start_date=2017-07-23&end_date=2017-07-29&api_key=Lhfmo5GJFKkymB61crhYsjHIUjNc8Eq8iuFBr4pn',
-		success: function(data) {
-			$.each(data, function(i, asteroid) {
-				$data.append('<li>first asteroid</li>')
+		ObjectType: "text",
+		success: function(Object) {
+			$.each(Object, function(i, asteroid) {
+				$Object.append('<li>name: '+ asteroid.name +', miles_per_hour: '+ asteroid.miles_per_hour +'</li>')
+				
 			})
+		},
+		error: function() {
+			alert('error loading asteroids')
 		}
 		
 
 	})
+	$('#add-asteroid').on('click', function() {
+		var asteroid = {
+			name: $name.val(),
+			miles_per_hour: $miles_per_hour.val(),
+		}
+		$.ajax({
+			type: 'POST',
+			url: '/backEnd',
+			data: asteroid,
+			success: function(newAsteroid) {
+				$Object.append('<li>name: '+ newAsteroid.name +', miles_per_hour: '+ newAsteroid.miles_per_hour +'</li>')
+
+
+			}
+		})
+
+
+	})
+})
 })
